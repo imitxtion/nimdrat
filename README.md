@@ -1,23 +1,32 @@
 # NimDRAT
 
-A minimal Discord-based remote administration tool (C2) written in **Nim**, built to
-understand how this class of software works on the inside. Intended for educational
-use in controlled lab environments only.
+## Disclaimer
+
+This project was created for **educational purposes only** — to learn Nim and to
+study how Discord-based C2 tooling operates in a security-research context. Use it
+exclusively on machines and networks you own or have explicit permission to test,
+such as your own lab VM. Using it against systems without authorization is illegal.
+The author assumes no liability for any misuse.
+
+## Overview
+
+A minimal Discord-based remote administration tool (C2) written fully in **Nim**.
 
 Two bots work together:
 
-- **runner** — the endpoint agent. Deployed on a lab machine, it collects system
-  information, reports to a private Discord server, and executes whatever the
+- **runner** — the endpoint agent. It collects system
+  information, encrypts it, and sends to a private Discord server, and executes whatever the
   operator types in its session channel.
 - **watcher** — the operator-side manager. It watches a *dropzone* channel, decrypts
-  incoming encrypted payloads, creates a session channel per runner and keeps
+  incoming encrypted payloads, creates a session channel per runner (victim's public IP as a name) and keeps
   channels sorted into Online / Offline categories via heartbeats.
 
 ## Screenshots
 
-The watcher relaying a runner's collected data to the session channel:
+The watcher's first message upon victim launched the executable. In the thread you will find `running-processes.txt` and `installed-apps.txt`.
 
 ![Connection established](screenshots/watcher-initial-censored.png)
+ 
 
 The list of available commands (type `help`):
 
@@ -48,6 +57,30 @@ Example channel and category structure of the server:
 - **Standalone Windows binaries** — transport uses native WinHTTP/SChannel, so no
   OpenSSL DLLs are needed on the target; the runner builds as a GUI executable with
   icon/version resources (see `runner/materials`).
+
+### The fake error on launch
+
+On Windows builds, the runner opens with a realistic application error dialog —
+*"installer.exe - Application Error: The application was unable to start correctly
+(0xc000007b)"*. It is a plain Win32 `MessageBox`
+fired on a background thread at startup (see `showFakeError` in `runner/main.nim`);
+clicking OK dismisses it and nothing else changes — the bot is already connected
+and keeps running silently in the background. Together with the GUI subsystem and
+the icon/version resources in `runner/materials`, its purpose is cover: a launch
+that visibly "fails" draws no attention, whereas a GUI process that starts with no
+window at all would look far more suspicious.
+
+## The `dimscord_nossl` fork
+
+Both bots were built using
+[dimscord_nossl](https://github.com/imitxtion/dimscord_nossl), my fork of
+[dimscord](https://github.com/krisppurg/dimscord) — a
+Discord library for Nim by [krisppurg](https://github.com/krisppurg). The fork adds
+an option (`-d:windowsNativeTls`) to use Windows' native WinHTTP/SChannel transport
+instead of OpenSSL, so the compiled bots have no `libssl` / `libcrypto` DLL
+dependency and run on a plain Windows machine as standalone executables. Otherwise, on some
+machinesOn
+Linux/macOS it behaves exactly like upstream dimscord.
 
 ## Setup
 
@@ -81,22 +114,3 @@ control.
    encrypted intel archive to the dropzone; the watcher decrypts it, creates the
    session channel and posts the summary. Type `help` in a session channel to list
    the commands — anything else is executed as a shell command.
-
-## The `dimscord_nossl` fork
-
-Both bots build against
-[dimscord_nossl](https://github.com/imitxtion/dimscord_nossl), my fork of
-[dimscord](https://github.com/krisppurg/dimscord) (as of commit `b930331`) — a
-Discord library for Nim by [krisppurg](https://github.com/krisppurg). The fork adds
-an option (`-d:windowsNativeTls`) to use Windows' native WinHTTP/SChannel transport
-instead of OpenSSL, so the compiled bots have no `libssl` / `libcrypto` DLL
-dependency and run on a plain Windows machine as standalone executables. On
-Linux/macOS it behaves exactly like upstream dimscord.
-
-## Disclaimer
-
-This project was created for **educational purposes only** — to learn Nim and to
-study how Discord-based C2 tooling operates in a security-research context. Use it
-exclusively on machines and networks you own or have explicit permission to test,
-such as your own lab VM. Using it against systems without authorization is illegal.
-The author assumes no liability for any misuse.
