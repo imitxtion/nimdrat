@@ -77,8 +77,7 @@ Both bots were built using
 Discord library for Nim by [krisppurg](https://github.com/krisppurg). The fork adds
 an option (`-d:windowsNativeTls`) to use Windows' native WinHTTP/SChannel transport
 instead of OpenSSL, so the compiled bots have no `libssl` / `libcrypto` DLL
-dependency and run on a plain Windows machine as standalone executables. Otherwise, on some
-machinesOn
+dependency and run on a plain Windows machine as standalone executables.
 Linux/macOS it behaves exactly like upstream dimscord.
 
 ## Setup
@@ -103,7 +102,7 @@ control.
    ```
 4. Fill in `watcher/src/constants.nim` and `runner/src/constants.nim` — placeholder
    values are included. Use the **same guild, dropzone and `SharedKey`** on both
-   sides, and give each runner deployment its own token.
+   sides.
 5. Build and run:
    ```sh
    cd watcher  && nim c main.nim && ./main
