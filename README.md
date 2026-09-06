@@ -10,7 +10,7 @@ The author assumes no liability for any misuse.
 
 ## Overview
 
-A minimal Discord-based remote administration tool (C2) written fully in **Nim**.
+A minimal Discord-based RAT written fully in Nim.
 
 Two bots work together:
 
@@ -26,7 +26,6 @@ Two bots work together:
 The watcher's first message upon victim launched the executable. In the thread you will find `running-processes.txt` and `installed-apps.txt`.
 
 ![Connection established](screenshots/watcher-initial-censored.png)
- 
 
 The list of available commands (type `help`):
 
